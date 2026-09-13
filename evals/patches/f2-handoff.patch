@@ -1,0 +1,13 @@
+diff --git a/src/export.py b/src/export.py
+index 3ac964e..5bf5ce0 100644
+--- a/src/export.py
++++ b/src/export.py
+@@ -11,3 +11,8 @@ def export_rows(rows, path):
+ # 스키마 추론이 남음. pyarrow 의존성 추가 여부 미결정.
+ def export_parquet(rows, path):
+     raise NotImplementedError
++
++
++def _infer_schema(rows):
++    # WIP: 타입 추론 절반만 됨. None 컬럼 처리 미정.
++    return [type(c).__name__ for c in rows[0]] if rows else []

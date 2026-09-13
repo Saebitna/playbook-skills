@@ -1,0 +1,18 @@
+diff --git a/src/search.py b/src/search.py
+index 9d31bb5..1193b76 100644
+--- a/src/search.py
++++ b/src/search.py
+@@ -1,8 +1,10 @@
+ import os
+ 
+ INDEX_PATH = os.environ.get("SEARCH_INDEX_PATH", "./index")
++RANKER = os.environ.get("SEARCH_RANKER", "bm25")
+ 
+ 
+-def find_docs(query, limit=10):
+-    """질의에 맞는 문서를 반환한다."""
+-    return [{"doc": query}][:limit]
++def search(query, limit=10, ranker=None):
++    """문서를 검색한다. ranker 는 'bm25' 또는 'tfidf'."""
++    ranker = ranker or RANKER
++    return [{"doc": query, "ranker": ranker}][:limit]

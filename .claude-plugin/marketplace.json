@@ -1,0 +1,27 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "playbook-skills",
+  "description": "AI 코딩 에이전트의 장기 workstream 절차를 스킬로 제공하는 마켓플레이스",
+  "owner": {
+    "name": "Saebitna"
+  },
+  "plugins": [
+    {
+      "name": "playbook-skills",
+      "description": "장기 workstream을 위한 다섯 가지 절차 스킬: 세션 재개/인계, 문서 close-out, 가설 기반 조사, 결정 기록. 문서 경로를 하드코딩하지 않고 프로젝트의 기존 관행을 탐지해 따른다.",
+      "author": {
+        "name": "Saebitna"
+      },
+      "source": "./plugins/playbook-skills",
+      "version": "0.1.0",
+      "category": "workflow",
+      "keywords": [
+        "handoff",
+        "documentation",
+        "investigation",
+        "adr",
+        "workstream"
+      ]
+    }
+  ]
+}
