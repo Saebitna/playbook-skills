@@ -65,22 +65,35 @@ DRY 보다 중요하다고 판단했다. 이식성이 이 프로젝트의 목적
 
 ### 사용자 파일을 임의로 고치지 않는다
 
-경로 규약을 `AGENTS.md` 에 **자동으로 기록하지 않는다.** 제안하고 승인받은 경우에만
-추가한다. 파일 삭제·이동도 마찬가지다. 승인 게이트가 있는 스킬(`doc-closeout`)은
-게이트 앞에서 멈추는 것이 기능의 일부다.
+다섯 스킬이 같은 승인 규칙을 쓴다.
+
+| 대상 | 승인 |
+| --- | --- |
+| 스킬 자신의 산출물 — handoff, 조사 기록, 새 decision record | 경로가 정해지면 바로 작성 |
+| 기존 canonical 문서 수정 — architecture, README, spec, 이전 ADR | 변경안 제시 → 승인 → 적용 (`doc-closeout` 의 Phase A → B) |
+| 파일 삭제·이동·archive, `AGENTS.md` 규약 추가, 커밋 | 항상 승인 후 |
+
+승인 게이트 앞에서 멈추는 것은 기능의 일부다.
+
+### 완료는 체크리스트로 판정한다
+
+각 `SKILL.md` 끝에 `## 완료 조건` 체크리스트가 있다. 에이전트는 보고 직전에 항목을 하나씩
+확인하고, 채우지 못한 항목은 빼지 않고 이유와 함께 보고한다. 같은 조건을 `evals/` 의
+grader 가 바깥에서 다시 판정한다.
 
 ## 검증
 
-트리거 발화·오발화·이식성을 확인하는 픽스처가 [`evals/`](evals/) 에 있다.
-스킬의 `description` 을 수정했다면 재실행한다.
+트리거 발화·오발화와 스킬별 완료 조건을 측정하는 `claude plugin eval` 스위트가
+[`plugins/playbook-skills/evals/`](plugins/playbook-skills/evals/) 에 있다.
+스킬의 `description` 이나 본문을 수정했다면 재실행한다.
 
 ```bash
-./evals/setup-fixtures.sh /tmp/pb-eval
+claude plugin eval ./plugins/playbook-skills --scaffold --allow-tools Bash Edit Write --judge-model sonnet
 ```
 
-방법과 판정 기준은 [`evals/README.md`](evals/README.md) 를 본다.
-핵심은 **워크스트림 맥락이 없는 에이전트에게 트리거 문구만 주고**, 판정은
-자기 보고가 아니라 트랜스크립트의 `Skill` 호출 기록으로 한다는 것이다.
+케이스, grader, 판정 원칙은 [`evals/README.md`](plugins/playbook-skills/evals/README.md) 를 본다.
+핵심은 **워크스트림 맥락이 없는 에이전트에게 트리거 문구만 주고**, 발화는 트랜스크립트의 `Skill`
+호출로, 완료 조건은 실행 후 파일 상태와 명시적 PASS/FAIL 기준으로 판정한다는 것이다.
 
 ## 출처
 

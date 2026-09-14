@@ -18,6 +18,9 @@ Last verified: YYYY-MM-DD
 
 지금 어디까지 왔는가. 한두 문단. 진행률 숫자보다 "무엇이 동작하고 무엇이 아직 아닌가"가 중요하다. `blocked`라면 무엇이 막고 있으며 누가·무엇이 풀 수 있는지 쓴다.
 
+커밋 상태를 한 줄로 쓴다. 예: "`src/export.py`의 `_infer_schema`는 미커밋 — 이 브랜치의 working tree에만 있다."
+
+
 ### Relevant Documents
 
 spec, plan, investigation, decision, architecture의 **경로만** 링크한다. 내용을 복사하지 않는다. 각 링크에 왜 관련 있는지 한 줄을 붙인다.
@@ -36,7 +39,7 @@ spec, plan, investigation, decision, architecture의 **경로만** 링크한다.
 
 ### Files Changed
 
-각 파일의 경로와 **변경 목적**을 쓴다. diff를 복사하지 않는다.
+각 파일의 경로, **변경 목적**, 커밋 여부를 쓴다. diff를 복사하지 않는다.
 
 ### Tests and Evidence
 
