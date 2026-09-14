@@ -1,6 +1,6 @@
 ---
 name: decision-record
-description: Writes a decision record (ADR) capturing the choice, the alternatives, the reasoning, the consequences, and the conditions that would reverse it. Use when the user says "ADR", "결정 기록", "이 선택 기록해두자", "decision record", "write this down", or when a technical choice between conflicting options was just made, a decision is hard to reverse, or an investigation concluded in a long-lived choice.
+description: Writes a decision record (ADR) capturing the choice, the alternatives, the reasoning, the consequences, and the conditions that would reverse it. Use when the user asks to record a technical decision that has been made, e.g. "ADR", "결정 기록", "이 선택 기록해두자", "decision record", "record this decision", or when another playbook skill hands off a durable choice for recording after approval. Not for comparison or advice questions ("A랑 B 중 뭐가 나아?") where nothing has been decided, and not for writing down a decision the user did not ask to record.
 ---
 
 # Decision Record

@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: f15-ambiguous-wrapup
+tags: [ambiguous]
+context:
+  scaffold_script: fixture.sh

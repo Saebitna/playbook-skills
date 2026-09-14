@@ -1,6 +1,6 @@
 ---
 name: investigation
-description: Runs a hypothesis-driven investigation with controlled experiments and a written evidence log, instead of guess-and-patch debugging. Use when the same failure keeps recurring, a fix attempt has already failed once, the cause is unclear, a bug is intermittent or performance-related, or the user says "원인을 모르겠어", "계속 실패해", "조사해줘", "investigate", "why does this keep happening".
+description: Runs a hypothesis-driven investigation with controlled experiments and a written evidence log, instead of guess-and-patch debugging. Use when a failure or defect keeps recurring, a fix attempt has already failed, the cause of a bug or performance regression is unclear, a bug is intermittent, or the user says "원인을 모르겠어", "계속 실패해", "왜 자꾸 터지지", "원인 조사해줘", "investigate", "why does this keep happening". Not for a first failure whose cause is evident from the error, and not for general research or technology comparisons.
 ---
 
 # Investigation

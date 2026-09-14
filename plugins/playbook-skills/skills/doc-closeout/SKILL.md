@@ -1,6 +1,6 @@
 ---
 name: doc-closeout
-description: Audits whether documentation still matches the code after a feature, fix, or refactor, proposes changes for approval, then applies only the approved ones. Use when the user says "문서 정리", "문서 close-out", "코드랑 문서 맞는지 확인", "구현 끝났으니 문서", "update the docs", or when a completed change altered public API, configuration, or operational procedures. Audit and mutation are separate phases — Phase A never edits files.
+description: Audits whether documentation still matches the code after a completed feature, fix, or refactor, proposes changes for approval, then applies only the approved ones. Use when implementation is done and the user asks to check or clean up the related docs, e.g. "문서 정리", "문서 close-out", "코드랑 문서 맞는지 확인", "구현 끝났으니 문서", "docs audit". Audit and mutation are separate phases — Phase A never edits files. Not for a direct edit the user already specified ("README에 설치법 추가해줘", "오타 고쳐줘"), and not for closing out a workstream handoff (use session-handoff).
 ---
 
 # Documentation Close-out

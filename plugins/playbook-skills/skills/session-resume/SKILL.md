@@ -1,6 +1,6 @@
 ---
 name: session-resume
-description: Recovers and verifies workstream state from a handoff document before resuming multi-session work. Use when the user says "이어서 작업", "이어서 해줘", "재개", "resume", "pick up where we left off", hands off from another agent or session, points at a handoff/status document, or restarts after a context compaction. Verifies handoff claims against the actual repository instead of trusting them.
+description: Recovers and verifies workstream state from a handoff document before resuming multi-session work. Use when a session starts without the prior conversation's context and the user says "이어서 작업", "이어서 해줘", "재개", "resume the work", "pick up where we left off", hands off from another agent or session, points at a handoff/status document, or restarts after a context compaction. Verifies handoff claims against the actual repository instead of trusting them. Not for continuing work that is already in progress in the current conversation.
 ---
 
 # Session Resume

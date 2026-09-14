@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: Writes or updates a workstream handoff document so the next session or agent can resume from the repository without the prior conversation, and closes it out when the workstream finishes. Use when the user says "인계", "핸드오프", "다음 세션용으로 정리", "오늘 여기까지", "handoff", "wrap up for next time", when work will not finish in this session, or when a finished workstream's handoff needs to be promoted and removed.
+description: Writes or updates a workstream handoff document so the next session or agent can resume from the repository without the prior conversation, and closes it out when the workstream finishes. Use when the user says "인계", "핸드오프", "다음 세션용으로 정리", "오늘 여기까지", "handoff", "wrap up for next time", when work will not finish in this session, or when a finished workstream's handoff needs to be promoted and removed. For checking whether documentation matches code after implementation, use doc-closeout instead.
 ---
 
 # Session Handoff
@@ -44,7 +44,7 @@ workstream마다 active handoff는 하나만 둔다. 서로 다른 목표의 TOD
 - 실행하지 않은 테스트를 통과했다고 쓰지 않는다.
 - 사실 주장에는 `references/handoff-structure.md`에 정의된 `Verified` / `Unverified` / `Outdated` 표시를 쓴다. `session-resume` 스킬이 같은 정의로 대조한다.
 - 참조 문서는 경로만 링크하고 내용을 복사하지 않는다.
-- 커밋되지 않은 변경이 있거나 handoff 문서 자체가 커밋되지 않았다면 그 사실을 `Current Status`에 쓰고, 보고에서 커밋을 **제안한다.** 직접 커밋하지 않는다.
+- 커밋되지 않은 변경이 있거나 handoff 문서 자체가 커밋되지 않았다면 그 사실을 `Current Status`에 쓰고, 보고에서 커밋을 **제안한다.** 사용자가 이번 요청에서 커밋을 명시적으로 요청했을 때만("커밋까지 해줘") handoff 문서와 관련 변경을 커밋하고, 커밋 해시를 `Current Status`에 적는다. 그 외에는 직접 커밋하지 않는다.
 - 가장 우선인 일이 사용자 결정(의존성 채택 여부 등)이면 `Status: blocked`로 두고, Next Recommended Action에 필요한 결정과 선택지, 결정 뒤의 첫 파일·검증을 쓴다.
 - Next Recommended Action은 **첫 파일·심볼, 수행할 변경, 직후 검증**까지 구체적으로 쓴다. "adapter 구현"은 나쁘고, "`src/.../adapter.py`의 기존 interface를 기준으로 `predict_batch`를 구현하고 `uv run pytest tests/test_adapter.py` 실행"은 좋다.
 
@@ -87,7 +87,7 @@ workstream이 완료됐다면 active handoff를 completed 상태로 장기 보�
 - [ ] 기존 handoff를 갱신했다면 이전의 `Key Decisions`와 `Rejected Approaches / Do Not Redo` 항목이 남아 있다.
 - [ ] `Next Recommended Action`에 첫 파일·심볼, 수행할 변경, 직후 검증 명령이 모두 있다. `blocked`라면 필요한 결정과 선택지가 있다.
 - [ ] 코드 주석·커밋 메시지·기존 문서의 진행 주장을 옮겨 적었다면, 코드로 확인했거나 `Unverified`로 표시했다.
-- [ ] 커밋되지 않은 변경이 있다면 `Current Status`에 적었고, 보고에서 커밋을 제안했다.
+- [ ] 커밋되지 않은 변경이 있다면 `Current Status`에 적었고, 보고에서 커밋을 제안했다. 사용자가 커밋을 요청했다면 커밋했고 해시를 적었다. 요청이 없었다면 커밋하지 않았다.
 
 ### 종료 모드
 
