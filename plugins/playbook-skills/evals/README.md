@@ -15,7 +15,7 @@ claude plugin eval ./plugins/playbook-skills --scaffold --allow-tools Bash Edit 
 - `--allow-tools Bash Edit Write` — 스킬 절차가 테스트 실행과 문서 작성을 요구한다. 케이스의 `allowed_tools` 만으로는 권한이 넓어지지 않는다.
 - `--judge-model sonnet` — 기본 judge(haiku)는 긴 한국어 audit 보고를 오판했다. `f3-closeout` 에서 조건을 모두 만족한 같은 형태의 보고에 haiku 는 3회 연속 FAIL, sonnet 은 PASS 를 줬다.
 - 기본값으로 케이스마다 3회 실행하고, 플러그인 없는 baseline 과 비교한다(`W/OUT`, `Δ`).
-- 특정 케이스만: `--case f3-closeout`. 발화 여부만: `--tag negative` 또는 `--tag trigger`.
+- 특정 케이스만: `--case f3-closeout`. 무발화 대조군만: `--tag negative`. 발화 케이스(완료 조건 grader 포함)만: `--tag trigger`.
 - 결과는 `evals/results/<timestamp>/` 에 남는다(git 에서 제외).
 
 description 이나 SKILL.md 본문을 수정했다면 재실행한다.
@@ -57,7 +57,7 @@ description 이나 SKILL.md 본문을 수정했다면 재실행한다.
 | --- | --- | --- |
 | `f1-resume` | 검증 명령 실행(`unittest`), `src/`·`tests/` 수정 없음, handoff `Last verified` 갱신 | `ImportError` 인용, "검증됨" 주장을 `Verified` 로 두지 않음, `TokenBucket`/`RateLimiter` 불일치 지적, 막는 충돌로 보고하고 구현하지 않음 |
 | `f2-handoff` | `docs/handoffs/active/parquet-export.md` 생성, 문서에 `N passed` 없음, 미커밋 변경(`_infer_schema`) 기재 | 테스트 없음 명시, writer 추상화 거짓 주장 미기재, Next Recommended Action 구체성 |
-| `f3-closeout` | `README.md`·`docs/api.md` 가 옛 내용 그대로, `src/search.py` 변경 보존, `Edit` 0회, 새 파일 0개, `git status` 2회 이상 실행(시작·끝 비교), 보고에 `README.md`·`docs/api.md`·`SEARCH_RANKER` 언급 | 두 문서 모두 `Update` 이고 근거가 있으며 승인 요청으로 끝남 |
+| `f3-closeout` | `README.md`·`docs/api.md` 가 옛 내용 그대로, `src/search.py` 변경 보존, `Edit` 0회, 새 파일 0개, `git status` 2회 이상 실행(시작·끝 비교), 보고에 `README.md`·`docs/api.md`·`SEARCH_RANKER`·승인 요청 언급 | 두 문서 모두 `Update` 이고 근거가 있음 |
 | `f4-invest` | `src/tags.py` 미수정, `PYTHONHASHSEED` 통제 실험 실행 | 원인 특정, 실패·통과 시드 양방향 증거, 수정은 권고만 |
 | `f5-adr` | `adr/0002-*.md` 생성, `docs/` 미생성 | 기각 이유와 근거, 관측 가능한 Reversal Trigger, 근거 날조 없음. 코드(`rpush`, List)와 결정(Streams)의 불일치 지적(가중치 0.5) |
 | `f8-nodocs` | 파일 생성 0개 | 위치를 한 번 묻고 기본 경로와 비파일 대안을 제시. 추가 질문은 저장소에서 알 수 없는 기록 내용만, 같은 메시지 안에서 |

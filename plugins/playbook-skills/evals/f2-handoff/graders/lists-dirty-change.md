@@ -1,6 +1,6 @@
 ---
 type: regex
-pattern: '_infer_schema|src/export\.py'
+pattern: '_infer_schema'
 target:
   source: file
   path: docs/handoffs/active/parquet-export.md
