@@ -36,7 +36,7 @@ workstream마다 active handoff는 하나만 둔다. 서로 다른 목표의 TOD
 4. 관련 spec, plan, decision, investigation 경로
 5. 이번 세션에 **실제로 실행한** 명령과 그 결과
 6. 코드 주석, TODO, 커밋 메시지에 적힌 진행 주장 — 옮겨 적기 전에 코드로 확인한다
-7. 커밋 상태 — 작업 중인 변경이 커밋·push되지 않았다면, 다른 clone이나 worktree에서는 재개할 수 없다
+7. 커밋 상태 — 작업 중인 변경이 커밋·push되지 않았다면, 다른 clone이나 worktree에서는 재개할 수 없다. git 저장소가 아니면 `git status`·`Files Changed`·커밋 상태 항목은 "없음 — git 저장소 아님"으로 채운다
 
 ## 작성 규율
 
@@ -72,10 +72,11 @@ workstream이 완료됐다면 active handoff를 completed 상태로 장기 보�
 
 ## 완료 조건
 
-보고 직전에 해당 모드의 항목을 하나씩 확인한다. 채우지 못한 항목은 이유와 함께 보고한다.
+보고 직전에 해당 모드의 항목을 하나씩 확인한다. 채우지 못한 항목은 빼지 말고 이유와 함께 보고한다.
 
 ### 작성/갱신 모드
 
+- [ ] handoff 경로와, 그 경로를 어떤 해석 단계로 정했는지 적었다.
 - [ ] `references/handoff-structure.md`의 모든 섹션이 있다. 해당 없는 섹션은 "없음"과 이유가 적혀 있다.
 - [ ] `Last verified`가 오늘 날짜다 (`date`로 확인한 값).
 - [ ] 완료 조건이 각각 검증 가능한 문장이고 조건마다 상태 표시가 있다. 추론한 조건에는 `Unverified`(추론함)가 붙어 있다.

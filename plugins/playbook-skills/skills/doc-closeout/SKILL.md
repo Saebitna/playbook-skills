@@ -25,9 +25,12 @@ description: Audits whether documentation still matches the code after a feature
 
 1. 작업 트리 지문 — `git status --porcelain -uall` 출력과 `git diff HEAD | shasum` 값을 기록해 둔다. 끝에서 다시 비교한다. 이미 수정 중인 파일을 더 고쳐도 status 출력은 같으므로 diff 해시까지 비교한다.
 2. 이번 요구사항과 완료 조건 — 대화, spec, plan, handoff에서 찾는다. 찾지 못하면 없다고 적고, 코드 변경만으로 audit한다. 사용자가 구현이 끝났다고 알린 변경은 의도된 변경으로 보고, 호환성을 깨는 부분은 `Update` 행의 위험 칸에 적는다.
-3. 변경 범위 — 커밋되지 않은 변경(`git diff HEAD`)과, 현재 브랜치가 기본 브랜치에서 갈라진 뒤의 커밋(`git diff <merge-base>..HEAD`)을 모두 본다. 기본 브랜치 위에서 작업 중이면 커밋되지 않은 변경만 본다. **어떤 범위를 봤는지 보고에 적는다.**
+3. 변경 범위 — 다음을 모두 본다. **어떤 범위를 봤는지 보고에 적는다.**
+   - 커밋되지 않은 변경(`git diff HEAD`)과 untracked 파일(`git status --porcelain -uall`의 `??`). 새 모듈은 diff에 나오지 않는다.
+   - 현재 브랜치가 기본 브랜치에서 갈라진 뒤의 커밋(`git diff <merge-base>..HEAD`). 기본 브랜치는 `origin/HEAD` → 로컬 `main` → 로컬 `master` 순으로 판별하고, 모두 없으면 사용자에게 묻는다. 기본 브랜치 위에서 작업 중이면 이 항목은 건너뛴다.
+   - 위 범위가 모두 비어 있으면(구현을 이미 기본 브랜치에 커밋한 경우 등) 추측하지 말고 점검할 범위(커밋 범위나 기준 커밋)를 묻는다.
 4. 변경된 public API, 설정 키, CLI, 운영 절차를 **목록으로** 뽑는다. 이름이 바뀐 것은 옛 이름과 새 이름을 모두 적는다.
-5. 위 목록의 각 항목을 검색어로 삼아 위 4단계 탐지로 관련 문서를 찾는다. 검색어와 결과 파일을 보고에 남긴다.
+5. 위 목록의 각 항목을 검색어로 삼아, `문서 위치 결정`의 4단계 탐지 방식으로 관련 문서를 찾는다. 검색어와 결과 파일을 보고에 남긴다.
 6. `docs/README.md`와 적용되는 `AGENTS.md` / `CLAUDE.md`
 
 **지금은 문서와 코드를 수정, 이동, 이름 변경, 삭제하지 않는다.**
@@ -90,16 +93,17 @@ Phase A와 다른 세션에서 승인을 받았거나 대화에 audit 표가 남
 
 사용자가 요청하면 수행한다. **파일을 수정하지 않는다.**
 
-code diff와 documentation diff를 함께 읽고 확인한다: architecture와 구현의 일치, spec `completed` 상태의 증거, 누락된 ADR, archive 문서가 현재 기준처럼 노출되는지, README routing, 중복 설명, 삭제로 인한 링크·지식 유실.
+Phase A와 같은 코드 변경 범위와, Phase B에서 생긴 문서 diff를 함께 읽고 확인한다: architecture와 구현의 일치, spec `completed` 상태의 증거, 누락된 ADR, archive 문서가 현재 기준처럼 노출되는지, README routing, 중복 설명, 삭제로 인한 링크·지식 유실.
 
 finding을 severity 순으로 path·근거와 함께 보고한다. 문제가 없으면 residual risk와 사람이 마지막으로 확인할 항목을 적는다.
 
 ## 완료 조건
 
-보고 직전에 해당 Phase의 항목을 하나씩 확인한다. 채우지 못한 항목은 이유와 함께 보고한다.
+보고 직전에 해당 Phase의 항목을 하나씩 확인한다. 채우지 못한 항목은 빼지 말고 이유와 함께 보고한다.
 
 ### Phase A
 
+- [ ] 관련 문서를 어떤 해석 단계로 찾았는지와, 사용한 변경 범위(기본 브랜치, merge-base, untracked 포함 여부)를 적었다.
 - [ ] 시작할 때와 보고 직전의 `git status --porcelain -uall` 출력과 `git diff HEAD | shasum` 값이 모두 같다. 두 시점의 값을 보고에 포함한다.
 - [ ] 변경된 public API·설정 키·CLI·운영 절차를 목록으로 적었고, 각각을 검색한 검색어와 결과 파일을 적었다.
 - [ ] 목록의 모든 변경 항목이 분류표의 한 행 이상에 나오거나, "문서 언급 없음 — 문서화 불필요" 같은 근거와 함께 표 아래에 적혀 있다.

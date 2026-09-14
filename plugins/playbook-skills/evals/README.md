@@ -8,8 +8,10 @@
 저장소 루트에서:
 
 ```bash
-claude plugin eval ./plugins/playbook-skills --scaffold --allow-tools Bash Edit Write --judge-model sonnet
+scripts/eval.sh
 ```
+
+`scripts/eval.sh` 는 아래 플래그를 고정해 `claude plugin eval` 을 호출하고, 추가 인자는 그대로 넘긴다.
 
 - `--scaffold` — 각 케이스의 `fixture.sh` 로 워크스페이스를 git 저장소로 구성한다. 없으면 모든 케이스가 빈 디렉터리에서 돌아 무의미하다.
 - `--allow-tools Bash Edit Write` — 스킬 절차가 테스트 실행과 문서 작성을 요구한다. 케이스의 `allowed_tools` 만으로는 권한이 넓어지지 않는다.

@@ -86,7 +86,7 @@ Handoff나 상태 문서를 **사실로 가정하지 않고 저장소와 대조�
 
 ## 완료 조건
 
-최종 보고 직전에 아래를 하나씩 확인한다. 채우지 못한 항목은 빼지 말고 이유와 함께 보고한다.
+보고 직전에 아래 항목을 하나씩 확인한다. 채우지 못한 항목은 빼지 말고 이유와 함께 보고한다.
 
 - [ ] 대상 상태 문서의 경로와, 그 경로를 어떤 해석 단계로 찾았는지 적었다.
 - [ ] 문서의 사실 주장(완료 조건별 상태, Current Status, Completed Work, Files Changed, Tests and Evidence, Known Issues)을 `Verified` / `Unverified` / `Outdated` 중 하나로 분류했다. 목표와 Next Recommended Action은 분류 대신 유효한지 판정했다.

@@ -31,7 +31,8 @@ claude plugin marketplace add ./경로/playbook-skills
 | `decision-record` | "이 선택 기록해두자", "ADR" | 선택·대안·근거·결과, 그리고 **되돌리는 조건**까지 기록 |
 
 다섯 개는 서로를 이름으로 참조한다(`investigation` → `decision-record`,
-`session-resume` ↔ `session-handoff` 등). 한 단위로 설치해야 한다.
+`session-resume` ↔ `session-handoff` 등). 각 스킬의 절차는 단독으로 동작하지만, 다른 스킬로
+넘기는 연계는 함께 설치했을 때만 동작한다. 그래서 플러그인은 다섯 개를 한 단위로 배포한다.
 
 ## 설계 원칙
 
@@ -56,8 +57,8 @@ claude plugin marketplace add ./경로/playbook-skills
 
 ### 경로 해석 블록은 의도적으로 복제한다
 
-같은 5단계 블록이 다섯 `SKILL.md` 에 중복돼 있다. `_shared/` 로 분리하거나 별도
-스킬을 호출하게 만들지 않았다. **스킬 디렉터리 하나만 복사해도 완전히 동작하는 것**이
+같은 경로 해석 블록이 다섯 `SKILL.md` 에 중복돼 있다. `_shared/` 로 분리하거나 별도
+스킬을 호출하게 만들지 않았다. **스킬 디렉터리 하나만 복사해도 그 스킬의 절차가 완전히 동작하는 것**이
 DRY 보다 중요하다고 판단했다. 이식성이 이 프로젝트의 목적이기 때문이다.
 
 이 결정을 뒤집으려면: 스킬 수가 늘어 중복 유지 비용이 실제로 문제가 되고,
@@ -72,6 +73,8 @@ DRY 보다 중요하다고 판단했다. 이식성이 이 프로젝트의 목적
 | 사용자가 이번 요청으로 부른 스킬의 산출물 — handoff, 조사 기록, decision record | 경로가 정해지면 바로 작성 |
 | 다른 스킬의 흐름 안에서 파생해 만드는 문서 — handoff 종료 모드의 승격 ADR, doc-closeout 의 `Decision needed`, investigation 끝의 ADR | 제안 → 승인 → 작성 |
 | 기존 canonical 문서 수정 — architecture, README, spec, 이전 ADR | 변경안 제시 → 승인 → 적용 (`doc-closeout` 의 Phase A → B) |
+| 제품 코드 수정 | 사용자가 요청한 작업 범위 안에서만 (investigation 은 수정 요청이 있을 때만) |
+| 임시 진단 변경 — 로그, 디버그 플래그 | 바로 하되, 끝내기 전에 되돌린다 |
 | 파일 삭제·이동·archive, `AGENTS.md` 규약 추가, 커밋 | 항상 승인 후 |
 
 승인 게이트 앞에서 멈추는 것은 기능의 일부다.
@@ -89,7 +92,7 @@ DRY 보다 중요하다고 판단했다. 이식성이 이 프로젝트의 목적
 스킬의 `description` 이나 본문을 수정했다면 재실행한다.
 
 ```bash
-claude plugin eval ./plugins/playbook-skills --scaffold --allow-tools Bash Edit Write --judge-model sonnet
+scripts/eval.sh
 ```
 
 케이스, grader, 판정 원칙은 [`evals/README.md`](plugins/playbook-skills/evals/README.md) 를 본다.
