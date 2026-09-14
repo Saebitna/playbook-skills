@@ -57,20 +57,23 @@ description 이나 SKILL.md 본문을 수정했다면 재실행한다.
 
 | 케이스 | 결정적 grader | llm grader |
 | --- | --- | --- |
-| `f1-resume` | 검증 명령 실행(`unittest`), `src/`·`tests/` 수정 없음, handoff `Last verified` 갱신 | `ImportError` 인용, "검증됨" 주장을 `Verified` 로 두지 않음, `TokenBucket`/`RateLimiter` 불일치 지적, 막는 충돌로 보고하고 구현하지 않음 |
-| `f2-handoff` | `docs/handoffs/active/parquet-export.md` 생성, 문서에 `N passed` 없음, 미커밋 변경(`_infer_schema`) 기재 | 테스트 없음 명시, writer 추상화 거짓 주장 미기재, Next Recommended Action 구체성 |
-| `f3-closeout` | `README.md`·`docs/api.md` 가 옛 내용 그대로, `src/search.py` 변경 보존, `Edit` 0회, 새 파일 0개, `git status` 2회 이상 실행(시작·끝 비교), 보고에 `README.md`·`docs/api.md`·`SEARCH_RANKER`·승인 요청 언급 | 두 문서 모두 `Update` 이고 근거가 있음 |
-| `f4-invest` | `src/tags.py` 미수정, `PYTHONHASHSEED` 통제 실험 실행 | 원인 특정, 실패·통과 시드 양방향 증거, 수정은 권고만 |
+| `f1-resume` | 검증 명령(`-m unittest discover`) 실행, `src/limiter.py`·`tests/test_limiter.py` 내용 그대로, Bash 로 `src/`·`tests/` 편집 0회, handoff `Status: blocked` 전환·옛 `Last verified` 줄 제거 | `ImportError` 인용, "검증됨" 주장을 `Verified` 로 두지 않음, `TokenBucket`/`RateLimiter` 불일치 지적, 막는 충돌로 보고하고 구현하지 않음 |
+| `f2-handoff` | `docs/handoffs/active/parquet-export.md` 생성, 통과 기록 날조 없음(`N passed`, `Ran N tests`, "모두 통과"), 미커밋 변경(`_infer_schema`) 기재 | 테스트 없음 명시, writer 추상화 거짓 주장 미기재, Next Recommended Action 구체성 |
+| `f3-closeout` | `README.md`·`docs/api.md` 가 옛 내용 그대로, `src/search.py` 변경 보존, `Edit`·`Write` 0회, Bash 편집·git 변경 0회, 새 `.md` 0개, `git status` 2회 이상, 보고에 `README.md`·`docs/api.md`·`SEARCH_RANKER`·승인 요청 언급 | 두 문서 모두 `Update` 이고 근거가 있음 |
+| `f4-invest` | `src/tags.py` 미수정, `PYTHONHASHSEED=` 통제 실험 실행, `docs/investigations/active/primary-tag-flaky.md` 에 `Baseline`·`Expected Result`·`Status: resolved`·`권고만` | 원인 특정, 실패·통과 시드 양방향 증거, 수정은 권고만 |
 | `f5-adr` | `adr/0002-*.md` 생성, `docs/` 미생성 | 기각 이유와 근거, 관측 가능한 Reversal Trigger, 근거 날조 없음. 코드(`rpush`, List)와 결정(Streams)의 불일치 지적(가중치 0.5) |
-| `f8-nodocs` | 파일 생성 0개 | 위치를 한 번 묻고 기본 경로와 비파일 대안을 제시. 추가 질문은 저장소에서 알 수 없는 기록 내용만, 같은 메시지 안에서 |
+| `f8-nodocs` | 새 `.md` 0개 | 위치를 한 번 묻고 기본 경로와 비파일 대안을 제시. 추가 질문은 저장소에서 알 수 없는 기록 내용만, 같은 메시지 안에서 |
 | `f6` / `f7` / `f9` / `f10` | 플레이북 스킬 호출 0회, 요청 작업 자체는 수행 | — |
-| `f11-advice` | 플레이북 스킬 호출 0회, 파일 생성 0개 | — |
+| `f11-advice` | 플레이북 스킬 호출 0회, 새 `.md` 0개 | — |
 
 ### 픽스처 설계 메모
 
 - `f2`, `f4` 의 `AGENTS.md` 에는 문서 규약이 있다. 규약이 없으면 스킬이 위치를 묻고 멈춰, 비대화형 실행에서는
   측정하려는 절차(날조 여부, 통제 실험)까지 가지 못한다. "위치를 묻는지"는 `f8` 이 전담한다.
 - `f5` 의 `src/queue.py` 가 Streams 가 아닌 List(`rpush`)를 쓰는 것은 의도한 함정이다. 결정 기록이 코드를 확인하는지 본다.
+- `f4` 도 `f1` 과 같은 이유로 표준 라이브러리 `unittest` 를 쓴다. 해시 시드에 따라 `AssertionError` 가 간헐적으로 난다.
+- "새 파일 없음" grader 는 `**/*.md` 만 본다. 에이전트가 Python 을 실행하면 `__pycache__` 가 생겨 `**/*` 로는 오판한다.
+- shell 명령을 실행하는 grader 타입은 없다. 수정 금지는 보호할 파일의 **내용 regex** 로 판정하고, Bash 편집 패턴(`sed -i`, 리다이렉트, `git checkout` 등) `max: 0` 은 보조로 둔다.
 - `f1` 은 handoff 이후 클래스 이름이 `TokenBucket` → `RateLimiter` 로 바뀐 상황이다. 검증 명령은 표준 라이브러리 `unittest` 라서
   eval 샌드박스(네트워크·uv 캐시 차단)에서도 같은 `ImportError` 로 실패한다. 이전 픽스처는 `uv run pytest` 수집 실패에 의존했는데,
   샌드박스에서는 uv 자체가 막혀 에이전트가 테스트 함수를 직접 호출하는 우회로 "통과"를 얻었다. 환경에 따라 결함이 사라지지 않게 바꿨다.
@@ -104,4 +107,5 @@ evals/
 - 검증한 것은 위 정형 문구뿐이다. 변형("문서 좀 손봐줘", "이거 왜 자꾸 터지지")은 측정하지 않았다.
 - 두 스킬의 트리거가 동시에 성립하는 경우(조사 후 결정 기록 등)의 우선순위는 측정하지 않았다.
 - `session-resume`, `session-handoff` 의 근접 대조군은 아직 없다. 세션 중간의 "계속해" 같은 요청은 이전 대화가 필요해 `context.history_file` 로 만들어야 한다.
+- 보고에 diff 해시가 있는지는 판정하지 않는다. eval 샌드박스에서 `git` 이 xcrun 캐시 문제로 실행되지 않는 경우가 있어, 에이전트가 `.git` 을 직접 읽어 비교하고 그 사실을 보고한 사례가 있다. 결과가 스킬이 아니라 환경에 좌우된다.
 - `f5` 의 llm grader 는 `trace` 를 보는데, judge 는 앞뒤 12개 메시지만 본다. 실행이 길면 ADR 작성 내용이 잘릴 수 있다.

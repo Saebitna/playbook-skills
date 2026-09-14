@@ -1,6 +1,7 @@
 ---
 type: regex
-pattern: 'Last verified: 2026-09-11'
+pattern: '^Last verified: 2026-09-11\s*$'
+flags: m
 match: not_contains
 target:
   source: file

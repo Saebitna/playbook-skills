@@ -1,5 +1,5 @@
 ---
 type: file_exists
-path: '**/*'
+path: '**/*.md'
 exists: false
 ---
