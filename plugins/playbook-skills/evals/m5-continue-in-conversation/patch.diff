@@ -1,0 +1,10 @@
+diff --git a/src/util.py b/src/util.py
+index f59342e..0264bcb 100644
+--- a/src/util.py
++++ b/src/util.py
+@@ -1,4 +1,5 @@
+ def proc(items):
++    """Return non-empty items stripped of surrounding whitespace and lowercased."""
+     return [i.strip().lower() for i in items if i]
+ 
+ 

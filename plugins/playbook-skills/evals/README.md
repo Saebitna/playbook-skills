@@ -50,6 +50,12 @@ description 이나 SKILL.md 본문을 수정했다면 재실행한다.
 | `f13-add-docs` | README.md 에 설치 섹션 추가해줘. 설치 명령은 pip install search-api 야 | **무발화** (근접: `doc-closeout`) |
 | `f14-handoff-commit` | 오늘 여기까지. 다음 세션용으로 정리하고 커밋까지 해줘 | `session-handoff` + 커밋 |
 | `f15-ambiguous-wrapup` | 작업 끝났으니 정리해줘 | 발화 여부는 판정하지 않음 — 모호함을 드러내고 파일을 바꾸지 않는지 (`ambiguous` 태그) |
+| `m1-closeout-phase-b` | (이전 턴: doc-closeout Phase A 보고) → README.md 만 적용해줘 | Phase B 부분 승인 (`multiturn`) |
+| `m2-handoff-closeout` | rate limiter 작업 다 끝났어. handoff 종료 정리해줘 | `session-handoff` 종료 모드 |
+| `m3-resume-proceed` | 이전 작업 이어서 해줘 | `session-resume`, 막는 충돌 없음 |
+| `m4-adr-supersede` | NOTES.md 에 정리한 대로 큐를 Streams 로 바꾸기로 했어. 이 결정 기록해줘 | `decision-record`, 기존 ADR 대체 |
+| `m5-continue-in-conversation` | (이전 턴: proc 에 docstring 추가) → 이어서 해줘. run 함수에도 한 줄 docstring 달아줘 | **무발화** (근접: `session-resume`) |
+| `m6-decision-in-conversation` | (이전 턴: Postgres vs Redis 비교) → 좋아, Redis Streams 로 가자. src/queue.py 의 enqueue 를 XADD 로 구현해줘 | **무발화** (근접: `decision-record`) |
 
 `f6`/`f7` 은 트리거와 거리가 먼 대조군이고, `f9`–`f11` 은 트리거와 비슷하지만 발화하면 안 되는 근접 대조군이다.
 
@@ -76,6 +82,11 @@ description 이나 SKILL.md 본문을 수정했다면 재실행한다.
 | `f13-add-docs` | 플레이북 스킬 호출 0회, `README.md` 에 설치 명령 추가 | — |
 | `f14-handoff-commit` | `session-handoff` 발화, handoff 파일 생성, `git commit` 실행 | — |
 | `f15-ambiguous-wrapup` | `README.md` 옛 내용 그대로, handoff 파일 유지, `Edit` 0회 | 두 해석을 제시해 묻거나, 파일을 바꾸지 않는 단계에서 승인을 요청 |
+| `m1-closeout-phase-b` | `README.md` 에서 `find_docs` 사라짐·`SEARCH_RANKER` 행 추가, 승인 안 된 `docs/api.md` 그대로, 소스 그대로, 새 `.md` 0개 | 해석한 승인 범위(README 의 1·2행)와 `docs/api.md` 에 남은 불일치를 보고 |
+| `m2-handoff-closeout` | 검증 명령 재실행, handoff 파일 유지, Bash 로 handoff 삭제·이동 0회 | 조건별 이번 세션 증거, 승격 제안, 제거/archive 승인 요청 |
+| `m3-resume-proceed` | 테스트 정확히 1개 추가(`def test_` 2개), sweep 미구현(멈추는 지점), 검증 명령 실행, `Last verified` 갱신 | — |
+| `m4-adr-supersede` | `adr/0002-*.md` 생성, `adr/0001` 이 여전히 `Status: accepted` 이고 `superseded` 표시 없음 | 새 문서의 대체 표시, 이전 문서 변경은 승인 요청, Kafka 기각 근거 |
+| `m5` / `m6` | 플레이북 스킬 호출 0회, 요청 작업 수행 (`run` docstring / `xadd` 구현), `m6` 은 새 `.md` 0개 | — |
 
 ### 픽스처 설계 메모
 
@@ -101,23 +112,54 @@ description 이나 SKILL.md 본문을 수정했다면 재실행한다.
 | 무발화 대조군 | f6, f7, f9–f13 | 7개 모두 3회 전부 1.00, 오발화 0/21 | 1.00 |
 | 모호 | f15 | 스킬 미발화, 두 해석을 제시해 질문 (grader 교체 후 1회 실행 1.00) | — |
 
+다중 턴·추가 흐름 케이스 (2026-09-15, 같은 설정, 비용 $9):
+
+| 케이스 | 플러그인 있음 | baseline |
+| --- | --- | --- |
+| m1 Phase B 부분 승인, m5·m6 대화 중 근접 대조군 | 3회 전부 1.00 | history 케이스는 baseline arm 이 돌지 않았다 |
+| m3 충돌 없는 재개, m4 ADR 대체 | 3회 전부 1.00 | 0.2–0.4 |
+| m2 handoff 종료 | 1.00, 1.00, 0.8 | 0.2 |
+
+m2 의 0.8 은 스킬 결함이 아니라 픽스처 결함을 잡은 결과였다. `test_rate_limit` 이 시계를 진행하지 않아
+"초당 10회"를 실제로 검증하지 못한다는 점을 에이전트가 지적하고, 규칙대로 종료 모드를 중단했다.
+m2·m3 의 테스트를 리필 속도까지 확인하도록 고친 뒤 1회씩 다시 실행해 1.00 을 확인했다.
+
 description 을 바꾸면 이 표를 다시 채운다.
 
 ## 구조
 
 ```text
 evals/
-├── _lib/scaffold.sh       # fixture/ 복사 → git init/commit → patch.diff 적용
+├── _lib/scaffold.sh               # fixture/ 복사 → git init/commit → patch.diff 적용
+├── _lib/sanitize-history.py       # 세션 트랜스크립트 → history.jsonl 정리
 └── <case>/
     ├── case.yaml          # name, tags, scaffold_script
     ├── prompt.md          # 트리거 문구와 실행 설정
     ├── fixture.sh         # _lib/scaffold.sh 호출
     ├── fixture/           # 워크스페이스에 복사할 파일
     ├── patch.diff         # (선택) 커밋 뒤 적용할 미커밋 변경
+    ├── history.jsonl      # (선택) 이전 대화. 케이스 프롬프트가 다음 턴이 된다
     └── graders/*.md
 ```
 
 픽스처를 손으로 살펴보려면 빈 디렉터리에서 `bash <케이스>/fixture.sh` 를 실행한다.
+
+## 다중 턴 케이스 (`m1`, `m5`, `m6`)
+
+`context.history_file` 로 이전 대화를 공급하고, 케이스 프롬프트가 다음 사용자 턴이 된다. 형식은 eval 결과의
+`trace.jsonl` 이 아니라 Claude Code **세션 트랜스크립트**(`config/projects/<cwd>/<session>.jsonl`)다.
+
+history 를 다시 만드는 방법:
+
+1. 첫 턴 프롬프트만 담은 임시 케이스를 만들고(`runs: 1`, 픽스처는 대상 케이스와 같게) 실행한다.
+   `scripts/eval.sh --ablation none --keep-temp --case <임시 케이스>`
+2. 출력의 `kept temp` 디렉터리 권한을 연 뒤(`chmod 700 <dir> <dir>/sealed`), `config/projects/**/*.jsonl` 을 찾는다.
+3. `python3 evals/_lib/sanitize-history.py <그 파일> <케이스>/history.jsonl` 로 정리한다.
+   첨부(샌드박스 설정·환경 경로)를 버리고 임시 경로와 사용자 이름을 바꾼다.
+4. **커밋 전에** 결과에서 사용자 이름, 홈 경로, 이메일을 검색해 남은 것이 없는지 확인한다. 이 파일은 공개 저장소에 들어간다.
+5. kept temp 디렉터리를 지운다.
+
+이전 턴의 워크스페이스 상태가 다음 턴에도 필요하면(`m5` 의 docstring) 같은 변경을 `patch.diff` 로 재현한다.
 
 ## `/skill-doctor` 로 대체할 수 없다
 
@@ -129,6 +171,6 @@ evals/
 
 - 검증한 것은 위 정형 문구뿐이다. 변형("문서 좀 손봐줘", "이거 왜 자꾸 터지지")은 측정하지 않았다.
 - 두 스킬의 트리거가 동시에 성립하는 경우(조사 후 결정 기록 등)의 우선순위는 측정하지 않았다.
-- `session-resume` 의 "같은 대화 안의 이어서 해줘", `decision-record` 의 "대화 중 합의" 근접 대조군은 아직 없다. 세션 중간의 "계속해" 같은 요청은 이전 대화가 필요해 `context.history_file` 로 만들어야 한다.
+- 다중 턴 케이스의 이전 턴은 고정된 트랜스크립트다. 스킬 본문이 바뀌어도 이전 턴의 행동(예: m1 의 Phase A 분류표)은 갱신되지 않으므로, Phase A 규칙을 크게 바꾸면 history 를 다시 만든다.
 - 보고에 diff 해시가 있는지는 판정하지 않는다. eval 샌드박스에서 `git` 이 xcrun 캐시 문제로 실행되지 않는 경우가 있어, 에이전트가 `.git` 을 직접 읽어 비교하고 그 사실을 보고한 사례가 있다. 결과가 스킬이 아니라 환경에 좌우된다.
 - `f5` 의 llm grader 는 `trace` 를 보는데, judge 는 앞뒤 12개 메시지만 본다. 실행이 길면 ADR 작성 내용이 잘릴 수 있다.
