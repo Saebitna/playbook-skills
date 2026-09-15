@@ -35,7 +35,9 @@ uv run pytest tests/test_rank.py::test_batch -x   → 5회 중 2회 실패 (flak
 
 | # | 가설 | 근거 | 이게 참이면 나타날 신호 | 상태 |
 | --- | --- | --- | --- | --- |
-| H1 | ... | ... | ... | open / supported / rejected |
+| H1 | ... | ... | ... | Open / Supported / Rejected |
+
+실험 `Interpretation`과 가설 상태의 대응: `Supported` → `Supported`, `Rejected` → `Rejected`, `Inconclusive` → `Open` 유지.
 
 ## 실험 로그 (실험마다 추가)
 
@@ -80,7 +82,7 @@ uv run pytest tests/test_rank.py::test_batch -x   → 5회 중 2회 실패 (flak
 
 ### Fix and Regression Test
 
-최소 범위의 수정 권고와 재발을 잡을 테스트.
+최소 범위의 수정 권고와 재발을 잡을 테스트. 첫 줄에 `적용됨` 또는 `권고만`을 적는다.
 
 ### Residual Uncertainty
 
