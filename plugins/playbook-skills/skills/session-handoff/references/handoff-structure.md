@@ -1,11 +1,57 @@
 # Handoff 문서 구조
 
-아래 구조를 그대로 사용한다. 해당 없는 섹션은 삭제하지 말고 "없음"과 이유를 쓴다.
+handoff는 규모에 따라 두 단계로 쓴다. 반나절짜리 작업에 12개 섹션을 채우면 작성이 작업보다 비싸진다.
+
+| | 쓰는 경우 | 섹션 |
+| --- | --- | --- |
+| **최소** | 같은 사람이 수일 내에 이어받고, 폐기한 접근이나 되돌리면 안 되는 결정이 아직 없을 때 | 5개 |
+| **전체** | 다른 사람·에이전트에게 넘기거나, `Do Not Redo` 항목이 있거나, 미커밋 변경이 여러 파일에 걸쳐 있거나, 여러 branch·worktree가 걸릴 때 | 12개 |
+
+최소에서 시작해 필요한 섹션이 생기면 그때 전체로 올린다. 반대로 내리지 않는다. 기존 handoff를 갱신할 때 그 문서가 이미 전체 단계면 최소로 줄이지 않는다.
+
+해당 없는 섹션은 삭제하지 말고 "없음"과 이유를 쓴다. 이 규칙은 **선택한 단계의 섹션**에만 적용된다.
+
+## 머리말
+
+두 단계가 같다. `Branch`는 다음 세션이 어디서 재개할지 정하는 값이므로 생략하지 않는다. git 저장소가 아니면 `Branch: 없음 — git 저장소 아님`으로 쓴다.
 
 ```markdown
 # <Workstream 이름>
 Status: active | blocked
 Last verified: YYYY-MM-DD
+Branch: <branch 이름>
+Worktree: <경로 — 별도 worktree에서 작업할 때만. 아니면 이 줄을 삭제한다>
+```
+
+`Branch`는 `git branch --show-current`, `Worktree`는 `git worktree list`로 확인한 값을 쓴다. 추정하지 않는다.
+
+## 단계별 섹션
+
+**최소**
+
+```markdown
+## Goal and Acceptance Criteria
+## Current Status
+## Known Issues and Unverified Assumptions
+## Next Recommended Action
+## Next Session Prompt
+```
+
+**전체**
+
+```markdown
+## Goal and Acceptance Criteria
+## Current Status
+## Relevant Documents
+## Completed Work
+## Key Decisions
+## Rejected Approaches / Do Not Redo
+## Files Changed
+## Tests and Evidence
+## Known Issues and Unverified Assumptions
+## Remaining Tasks
+## Next Recommended Action
+## Next Session Prompt
 ```
 
 ## 섹션별 지침
