@@ -31,7 +31,7 @@ workstream마다 active handoff는 하나만 둔다. 서로 다른 목표의 TOD
 ## 작성 전 확인
 
 1. 현재 요구사항과 완료 조건 — 대화, spec, plan, 기존 handoff에서 찾는다. 찾지 못해 추론했다면 각 조건에 `Unverified`(추론함)를 붙이고 보고에서 확인을 요청한다
-2. `git status`, `git diff`, 변경 파일
+2. `git status`, `git diff`, 변경 파일, 그리고 현재 branch와 worktree (`git branch --show-current`, `git worktree list`)
 3. 적용되는 `AGENTS.md` / `CLAUDE.md`
 4. 관련 spec, plan, decision, investigation 경로
 5. 이번 세션에 **실제로 실행한** 명령과 그 결과
@@ -48,7 +48,7 @@ workstream마다 active handoff는 하나만 둔다. 서로 다른 목표의 TOD
 - 가장 우선인 일이 사용자 결정(의존성 채택 여부 등)이면 `Status: blocked`로 두고, Next Recommended Action에 필요한 결정과 선택지, 결정 뒤의 첫 파일·검증을 쓴다.
 - Next Recommended Action은 **첫 파일·심볼, 수행할 변경, 직후 검증**까지 구체적으로 쓴다. "adapter 구현"은 나쁘고, "`src/.../adapter.py`의 기존 interface를 기준으로 `predict_batch`를 구현하고 `uv run pytest tests/test_adapter.py` 실행"은 좋다.
 
-문서 구조와 섹션별 지침은 `references/handoff-structure.md`를 읽고 그대로 따른다.
+문서 구조와 섹션별 지침은 `references/handoff-structure.md`를 읽고 그대로 따른다. 거기서 최소·전체 단계를 먼저 고르고, 어느 단계를 골랐는지와 그 이유를 보고에 밝힌다.
 
 ## 종료 모드
 
@@ -77,7 +77,8 @@ workstream이 완료됐다면 active handoff를 completed 상태로 장기 보�
 ### 작성/갱신 모드
 
 - [ ] handoff 경로와, 그 경로를 어떤 해석 단계로 정했는지 적었다.
-- [ ] `references/handoff-structure.md`의 모든 섹션이 있다. 해당 없는 섹션은 "없음"과 이유가 적혀 있다.
+- [ ] 최소·전체 중 어느 단계로 썼는지 보고에 밝혔고, `references/handoff-structure.md`의 **그 단계** 섹션이 모두 있다. 해당 없는 섹션은 "없음"과 이유가 적혀 있다. 기존 문서가 전체 단계였다면 최소로 줄이지 않았다.
+- [ ] 머리말에 `Branch`가 있고 `git branch --show-current`로 확인한 값이다. 별도 worktree에서 작업했다면 `Worktree`도 있다. git 저장소가 아니면 그 사실이 적혀 있다.
 - [ ] `Last verified`가 오늘 날짜다 (`date`로 확인한 값).
 - [ ] 완료 조건이 각각 검증 가능한 문장이고 조건마다 상태 표시가 있다. 추론한 조건에는 `Unverified`(추론함)가 붙어 있다.
 - [ ] `Completed Work`의 모든 항목에 확인 가능한 증거(파일, 테스트, 커밋)가 붙어 있다.
