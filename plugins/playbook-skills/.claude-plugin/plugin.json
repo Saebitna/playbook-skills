@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "playbook-skills",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "장기 workstream을 위한 다섯 가지 절차 스킬: 세션 재개/인계, 문서 close-out, 가설 기반 조사, 결정 기록",
   "author": {
     "name": "Saebitna"
